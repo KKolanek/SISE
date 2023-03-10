@@ -1,0 +1,2 @@
+# SISE
+Sztuczna Inteligencja
