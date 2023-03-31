@@ -32,7 +32,8 @@ class Graf:
         return Graf(newPuzzle)
 
     @staticmethod
-    def getNeighborhood(value, actions):
+    def getNeighborhood(value):
+        actions = [*sys.argv[2]]
         neighborhood = []
         for action in actions:
             neighborhoodState = value.state.move(action)
@@ -87,9 +88,8 @@ def main():
     graf, w, k = odczyt(sys.argv[3])
     path, visited, queue = 0, 0, 0
     root = State(Graf(graf), None, None)
-    actions = [*sys.argv[2]]
     if sys.argv[1] == "bfs":
-        path, visited, queue = bfs.bfs(root, actions)
+        path, visited, queue = bfs.bfs(root)
     zapis(path, sys.argv[4])
     zapis(path, sys.argv[5], visited, queue)
     print(str(path), visited, queue)
