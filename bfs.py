@@ -1,6 +1,6 @@
 from collections import deque
 
-def bfs(Graf, root):
+def bfs(root, actions):
     queue = deque([root])
     visited = set()
     if root.isGoal():
@@ -8,7 +8,7 @@ def bfs(Graf, root):
         return path, len(visited), len(queue)
     while len(queue) != 0:
         value = queue.popleft()
-        for neighborhood in Graf.getNeighborhood(value):
+        for neighborhood in root.state.getNeighborhood(value, actions):
             # print(value.state.puzzle)
             if value.isGoal():
                 path = value.find_path()

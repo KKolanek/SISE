@@ -1,9 +1,10 @@
+import sys
 import bfs
 
 
 class Graf:
     def __init__(self, puzzle):
-        graf, w, k = odczyt()
+        graf, w, k = odczyt(sys.argv[3])
         self.sizeW = w
         self.sizeK = k
         self.puzzle = puzzle
@@ -30,8 +31,8 @@ class Graf:
 
         return Graf(newPuzzle)
 
-    def getNeighborhood(self, value):
-        actions = ["L", "R", "U", "D"]
+    @staticmethod
+    def getNeighborhood(value, actions):
         neighborhood = []
         for action in actions:
             neighborhoodState = value.state.move(action)
@@ -58,8 +59,8 @@ class State:
     def isGoal(self):
         return self.state.puzzle == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
 
-def odczyt():
-    with open("4x4/4x4_07_00212.txt", "r") as f:
+def odczyt(name):
+    with open("4x4/" + name, "r") as f:
         lines = f.read().splitlines()
     size = lines[0]
     graf = []
@@ -69,10 +70,29 @@ def odczyt():
     f.close()
     return graf, int(size[0]), int(size[2])
 
+def zapis(dane, name, *solve):
+    f = open(name, mode='w')
+    if dane.__len__() == 0:
+        f.write("-1")
+    else:
+        f.write(str(dane.__len__()))
+        if solve:
+            f.write("\n" + str(solve[0]))
+            f.write("\n" + str(solve[1]))
+        else:
+            f.write("\n" + str(dane))
+    f.close()
+
 def main():
-    graf, w, k = odczyt()
+    graf, w, k = odczyt(sys.argv[3])
+    path, visited, queue = 0, 0, 0
     root = State(Graf(graf), None, None)
-    print(bfs.bfs(Graf(graf), root))
+    actions = [*sys.argv[2]]
+    if sys.argv[1] == "bfs":
+        path, visited, queue = bfs.bfs(root, actions)
+    zapis(path, sys.argv[4])
+    zapis(path, sys.argv[5], visited, queue)
+    print(str(path), visited, queue)
 
 
 if __name__ == "__main__": main()
