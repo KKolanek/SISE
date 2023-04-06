@@ -1,19 +1,22 @@
 from collections import deque
 
 def bfs(root):
-    queue = deque([root])
-    visited = set()
+    maxDepth = 0
+    frontier = deque([root])
+    closed = set()
     if root.isGoal():
         path = root.find_path()
-        return path, len(visited), len(queue)
-    while len(queue) != 0:
-        value = queue.popleft()
+        return path, len(closed), len(frontier), maxDepth
+    while len(frontier) != 0:
+        value = frontier.popleft()
         for neighborhood in root.state.getNeighborhood(value):
             # print(value.state.puzzle)
+            # print(maxDepth)
             if neighborhood.isGoal():
                 path = neighborhood.find_path()
-                return path, len(visited), len(queue)
-            if neighborhood not in visited:
-                queue.append(neighborhood)
-                visited.add(neighborhood)
-    return -1
+                maxDepth = max(neighborhood.depth, neighborhood.parent.depth)
+                return path, len(closed), len(frontier), maxDepth
+            if neighborhood not in closed:
+                frontier.append(neighborhood)
+                closed.add(neighborhood)
+    return -1, len(closed), len(frontier), maxDepth
