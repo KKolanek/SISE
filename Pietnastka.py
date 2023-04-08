@@ -22,7 +22,7 @@ class Graf:
         D = index0 + self.sizeW
         U = index0 - self.sizeW
         if course == "R":
-            if R < (self.sizeW-1):
+            if R < (self.sizeW - 1):
                 newPuzzle[index0 + 1], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 + 1]
         if course == "D":
             if D < (self.sizeW * self.sizeK):
@@ -38,6 +38,8 @@ class Graf:
     @staticmethod
     def getNeighborhood(value):
         actions = [*sys.argv[2]]
+        if actions == ['m', 'a', 'n', 'h'] or actions == ['h', 'a', 'm', 'm']:
+            actions = ['R', 'L', 'U', 'D']
         neighborhood = []
         for action in actions:
             neighborhoodState = value.state.move(action)
@@ -70,6 +72,10 @@ class State:
     def __hash__(self):
         return hash(tuple(self.state))
 
+    def __getitem__(self, index):
+        row, col = divmod(index, self.state.sizeK)
+        return self.state.puzzle[row * self.state.sizeW + col]
+
     def find_path(self):
         path = []
         node = self
@@ -79,27 +85,36 @@ class State:
         path.reverse()
         return path
 
+    def goal(self):
+        lists = self.state.puzzle[:]
+        lists.sort()
+        lists.remove(0)
+        lists.append(0)
+        return lists
+
     def isGoal(self):
-        return self.state.puzzle == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
+        return self.state.puzzle == self.goal()
+
 
 def hamming(state):
     count = 0
-    for i in range(len(state)):
-        if state[i] != i:
+    for i in range(len(state.state.puzzle)):
+        if state.state.puzzle[i] != state.goal()[i]:
             count += 1
     return count
 
 
 def manhattan(state):
-    count = 0
-    for i in range(state.state.sizeK):
-        for j in range(state.state.sizeK):
-            current_position = i*state.state.sizeK + j
-            goal_position = state.state.puzzle.index(current_position)
-            current_row, current_col = divmod(current_position, state.state.sizeK)
-            goal_row, goal_col = divmod(goal_position, state.state.sizeK)
-            count += abs(current_row - goal_row) + abs(current_col - goal_col)
-    return count
+    total_distance = 0
+    for i in range(len(state.state.puzzle)):
+        current_row = i // state.state.sizeW
+        current_col = i % state.state.sizeK
+        goal_row = (state.state.puzzle[i] - 1) // state.state.sizeW
+        goal_col = (state.state.puzzle[i] - 1) % state.state.sizeK
+        distance = abs(current_row - goal_row) + abs(current_col - goal_col)
+        total_distance += distance
+    return total_distance
+
 
 def h(state):
     val = 0
@@ -110,6 +125,7 @@ def h(state):
         val = hamming(state)
     return val
 
+
 def load(name):
     with open("4x4/" + name, "r") as f:
         lines = f.read().splitlines()
@@ -119,6 +135,7 @@ def load(name):
         graf += i.split(" ")
     graf = [int(i) for i in graf]
     return graf, int(size[0]), int(size[2])
+
 
 def save(dane, name, *solve):
     f = open(name, mode='w')
@@ -133,6 +150,7 @@ def save(dane, name, *solve):
     else:
         f.write(str(dane))
     f.close()
+
 
 def main():
     graf, w, k = load(sys.argv[3])
