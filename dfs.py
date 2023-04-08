@@ -1,4 +1,3 @@
-
 def dfs(root):
     depth = 35
     maxDepth = 0
@@ -11,14 +10,15 @@ def dfs(root):
     while len(frontier) != 0:
         value = frontier.pop()
         closed.add(value)
-        for neighborhood in reversed(root.state.getNeighborhood(value)):
-            # print(neighborhood.state.puzzle)
-            # print(neighborhood.depth)
-            if neighborhood.depth <= depth:
-                if neighborhood not in closed or neighborhood not in frontier:
+        if value.depth < depth:
+            for neighborhood in reversed(root.state.getNeighborhood(value)):
+                depthM = neighborhood.depth
+                # print(neighborhood.state.puzzle)
+                if neighborhood not in closed and neighborhood not in frontier:
                     if neighborhood.isGoal():
                         path = neighborhood.find_path()
-                        maxDepth = max(neighborhood.depth, neighborhood.parent.depth)
+                        maxDepth = max(neighborhood.depth, depthM)
                         return path, len(closed), len(frontier), maxDepth
                     frontier.append(neighborhood)
+            del neighborhood
     return -1, len(closed), len(frontier), maxDepth
