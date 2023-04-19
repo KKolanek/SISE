@@ -165,8 +165,8 @@ def main():
         path, visited, closed, depth = dfs.dfs(root)
     elif sys.argv[1] == "astr":
         path, visited, closed, depth = Astar.astr(root)
-    save(path, sys.argv[4])
-    save(path, sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
+    save(path, "Solve/" + sys.argv[4])
+    save(path, "Stats/" + sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
     print(str(path), visited, closed, depth, round(time.process_time()*1000, 3))
 
 
