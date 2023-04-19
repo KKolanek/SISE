@@ -2,6 +2,7 @@ import sys
 import Astar
 import bfs
 import dfs
+import time
 
 
 class Graf:
@@ -79,8 +80,9 @@ class State:
     def find_path(self):
         path = []
         node = self
-        while node is not None and node.action is not None:
-            path.append(node.action)
+        while node is not None:
+            if node.action is not None:
+                path.append(node.action)
             node = node.parent
         path.reverse()
         return path
@@ -147,6 +149,7 @@ def save(dane, name, *solve):
         f.write(str(solve[0]))
         f.write("\n" + str(solve[1]))
         f.write("\n" + str(solve[2]))
+        f.write("\n" + str(solve[3]))
     else:
         f.write(str(dane))
     f.close()
@@ -163,8 +166,8 @@ def main():
     elif sys.argv[1] == "astr":
         path, visited, closed, depth = Astar.astr(root)
     save(path, sys.argv[4])
-    save(path, sys.argv[5], visited, closed, depth)
-    print(str(path), visited, closed, depth)
+    save(path, sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
+    print(str(path), visited, closed, depth, round(time.process_time()*1000, 3))
 
 
 if __name__ == "__main__": main()

@@ -10,12 +10,9 @@ def bfs(root):
     while len(frontier) != 0:
         value = frontier.popleft()
         for neighborhood in root.state.getNeighborhood(value):
-            depthM = neighborhood.depth
-            # print(value.state.puzzle)
-            # print(maxDepth)
+            maxDepth = max(neighborhood.depth, maxDepth)
             if neighborhood.isGoal():
                 path = neighborhood.find_path()
-                maxDepth = max(neighborhood.depth, depthM)
                 return path, len(closed), len(frontier), maxDepth
             if neighborhood not in closed:
                 frontier.append(neighborhood)
