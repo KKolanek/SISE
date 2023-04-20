@@ -85,7 +85,10 @@ class State:
                 path.append(node.action)
             node = node.parent
         path.reverse()
-        return path
+        lenPath = len(path)
+        path = ", ".join(path)
+        path = path[0:len(path)]
+        return path, lenPath
 
     def goal(self):
         lists = self.state.puzzle[:]
@@ -139,10 +142,10 @@ def load(name):
     return graf, int(size[0]), int(size[2])
 
 
-def save(dane, name, *solve):
+def save(dane, lenP, name, *solve):
     f = open(name, mode='w')
     if dane != -1:
-        f.write(str(dane.__len__()) + "\n")
+        f.write(str(lenP) + "\n")
     elif dane == -1 and solve:
         f.write("-1\n")
     if solve:
@@ -157,17 +160,17 @@ def save(dane, name, *solve):
 
 def main():
     graf, w, k = load(sys.argv[3])
-    path, visited, closed, depth = 0, 0, 0, 0
+    path, lenPath, visited, closed, depth = 0, 0, 0, 0, 0
     root = State(Graf(graf), None, None, 0)
     if sys.argv[1] == "bfs":
-        path, visited, closed, depth = bfs.bfs(root)
+        path, lenPath, visited, closed, depth = bfs.bfs(root)
     elif sys.argv[1] == "dfs":
-        path, visited, closed, depth = dfs.dfs(root)
+        path, lenPath, visited, closed, depth = dfs.dfs(root)
     elif sys.argv[1] == "astr":
-        path, visited, closed, depth = Astar.astr(root)
-    save(path, "Solve/" + sys.argv[4])
-    save(path, "Stats/" + sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
-    print(str(path), visited, closed, depth, round(time.process_time()*1000, 3))
+        path, lenPath, visited, closed, depth = Astar.astr(root)
+    save(path, lenPath, "Solve/" + sys.argv[4])
+    save(path, lenPath, "Stats/" + sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
+    # print(str(path), visited, closed, depth, round(time.process_time(), 3))
 
 
 if __name__ == "__main__": main()

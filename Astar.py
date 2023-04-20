@@ -12,8 +12,8 @@ def astr(root):
         if value not in closed:
             maxDepth = max(value.depth, maxDepth)
             if value.isGoal():
-                path = value.find_path()
-                return path, len(closed), len(frontier), maxDepth
+                path, lenPath = value.find_path()
+                return path, lenPath, len(closed), len(frontier), maxDepth
             closed.add(value)
             for neighborhood in root.state.getNeighborhood(value):
                 if neighborhood not in closed:
