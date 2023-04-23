@@ -1,2 +1,2 @@
 6
-U, U, L, D, R, D
+UULDRD

@@ -1,2 +1,2 @@
 5
-D, L, U, R, D
+DLURD

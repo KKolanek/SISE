@@ -4,13 +4,14 @@ import bfs
 import dfs
 import time
 
-
 class Graf:
+
     def __init__(self, puzzle):
         graf, w, k = load(sys.argv[3])
         self.sizeW = w
         self.sizeK = k
         self.puzzle = puzzle
+
 
     def __iter__(self):
         return iter(self.puzzle)
@@ -28,6 +29,7 @@ class Graf:
         if course == "D":
             if D < (self.sizeW * self.sizeK):
                 newPuzzle[index0 + self.sizeW], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 + self.sizeW]
+
         if course == "L":
             if L > 0:
                 newPuzzle[index0 - 1], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 - 1]
@@ -86,7 +88,7 @@ class State:
             node = node.parent
         path.reverse()
         lenPath = len(path)
-        path = ", ".join(path)
+        path = "".join(path)
         path = path[0:len(path)]
         return path, lenPath
 
@@ -170,7 +172,7 @@ def main():
         path, lenPath, visited, closed, depth = Astar.astr(root)
     save(path, lenPath, "Solve/" + sys.argv[4])
     save(path, lenPath, "Stats/" + sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
-    # print(str(path), visited, closed, depth, round(time.process_time(), 3))
+    print(str(path), visited, closed, depth, round(time.process_time(), 3))
 
 
 if __name__ == "__main__": main()

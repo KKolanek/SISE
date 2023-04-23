@@ -1,2 +1,2 @@
 6
-L, L, D, R, D, R
+LLDRDR

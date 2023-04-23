@@ -1,2 +1,2 @@
 7
-D, R, R, U, R, D, D
+DRRURDD

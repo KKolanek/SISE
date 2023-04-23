@@ -1,2 +1,2 @@
 6
-R, D, L, U, R, D
+RDLURD

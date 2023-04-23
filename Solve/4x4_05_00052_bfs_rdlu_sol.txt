@@ -1,2 +1,2 @@
 5
-U, L, D, R, R
+ULDRR

@@ -1,2 +1,2 @@
 5
-R, R, R, D, D
+RRRDD

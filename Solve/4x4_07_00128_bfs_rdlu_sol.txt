@@ -1,2 +1,2 @@
 7
-U, R, D, L, D, D, R
+URDLDDR
