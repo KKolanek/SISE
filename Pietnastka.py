@@ -72,14 +72,11 @@ class State:
 
     def __eq__(self, other):
         if isinstance(other, State):
-            return self.state.puzzle == other.state.puzzle
+            return tuple(self.state.puzzle) == tuple(other.state.puzzle)
         return False
 
     def __hash__(self):
         return hash(tuple(self.state.puzzle))
-
-    def __str__(self):
-        return str(self.state.puzzle)
 
     def find_path(self):
         path = []

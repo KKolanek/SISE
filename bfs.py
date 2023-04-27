@@ -9,6 +9,7 @@ def bfs(root):
         return path, lenPath, len(closed)+len(frontier), len(frontier), maxDepth
     while len(frontier) != 0:
         value = frontier.popleft()
+        closed.add(value)
         for neighborhood in root.state.getNeighborhood(value):
             maxDepth = max(neighborhood.depth, maxDepth)
             if neighborhood.isGoal():
