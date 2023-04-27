@@ -15,7 +15,7 @@
 #    use only the particular order specified as PARAM for blind strategies or
 #    the particular heuristic specified as PARAM for informed strategies.
 #
-# TODO: Change variable $Progcmd to match the command needed to invoke the
+
 # actual program, using the absolute (or relative) path, for example:
 #  $Progcmd = 'C:\Users\User\15puzzle\bin\solver.exe' (native code)
 #  $Progcmd = 'java -jar C:\Users\User\15puzzle\bin\solver.jar' (executable JAR file)

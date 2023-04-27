@@ -12,31 +12,38 @@ class Graf:
         self.sizeK = k
         self.puzzle = puzzle
 
-
     def __iter__(self):
         return iter(self.puzzle)
 
     def move(self, course):
         newPuzzle = self.puzzle[:]
         index0 = newPuzzle.index(0)
-        R = index0 % self.sizeW
-        L = index0 % self.sizeW
+        R = index0 % self.sizeK
+        L = index0 % self.sizeK
         D = index0 + self.sizeW
         U = index0 - self.sizeW
         if course == "R":
-            if R < (self.sizeW - 1):
+            if R < (self.sizeK - 1):
                 newPuzzle[index0 + 1], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 + 1]
+            else:
+                return None
         if course == "D":
             if D < (self.sizeW * self.sizeK):
                 newPuzzle[index0 + self.sizeW], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 + self.sizeW]
-
+            else:
+                return None
         if course == "L":
             if L > 0:
                 newPuzzle[index0 - 1], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 - 1]
+            else:
+                return None
         if course == "U":
             if U >= 0:
                 newPuzzle[index0 - self.sizeW], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 - self.sizeW]
+            else:
+                return None
         return Graf(newPuzzle)
+
 
     @staticmethod
     def getNeighborhood(value):
@@ -47,10 +54,9 @@ class Graf:
         for action in actions:
             neighborhoodState = value.state.move(action)
             temp = value.depth
-            if neighborhoodState.puzzle == value.state.puzzle:
-                action = None
             neighborhoodNode = State(neighborhoodState, value, action, temp + 1)
-            neighborhood.append(neighborhoodNode)
+            if neighborhoodState is not None:
+                neighborhood.append(neighborhoodNode)
         return neighborhood
 
 
@@ -61,35 +67,30 @@ class State:
         self.action = action
         self.depth = depth
 
-    def __len__(self):
-        return len(self.state.puzzle)
-
     def __lt__(self, other):
         return self.depth < other.depth
 
     def __eq__(self, other):
         if isinstance(other, State):
-            return self.state == other.state
+            return self.state.puzzle == other.state.puzzle
         return False
 
     def __hash__(self):
-        return hash(tuple(self.state))
+        return hash(tuple(self.state.puzzle))
 
-    def __getitem__(self, index):
-        row, col = divmod(index, self.state.sizeK)
-        return self.state.puzzle[row * self.state.sizeW + col]
+    def __str__(self):
+        return str(self.state.puzzle)
 
     def find_path(self):
         path = []
         node = self
-        while node is not None:
-            if node.action is not None:
-                path.append(node.action)
+        while node is not None and node.action is not None:
+            path.append(node.action)
             node = node.parent
         path.reverse()
         lenPath = len(path)
         path = "".join(path)
-        path = path[0:len(path)]
+        path = path[0:lenPath]
         return path, lenPath
 
     def goal(self):
@@ -103,33 +104,33 @@ class State:
         return self.state.puzzle == self.goal()
 
 
-def hamming(state):
+def hamming(value):
     count = 0
-    for i in range(len(state.state.puzzle)):
-        if state.state.puzzle[i] != state.goal()[i]:
+    for i in range(len(value.state.puzzle)):
+        if value.state.puzzle[i] != value.goal()[i]:
             count += 1
     return count
 
 
-def manhattan(state):
+def manhattan(value):
     total_distance = 0
-    for i in range(len(state.state.puzzle)):
-        current_row = i // state.state.sizeW
-        current_col = i % state.state.sizeK
-        goal_row = (state.state.puzzle[i] - 1) // state.state.sizeW
-        goal_col = (state.state.puzzle[i] - 1) % state.state.sizeK
+    for i in range(len(value.state.puzzle)):
+        current_row = i // value.state.sizeW
+        current_col = i % value.state.sizeK
+        goal_row = (value.state.puzzle[i] - 1) // value.state.sizeW
+        goal_col = (value.state.puzzle[i] - 1) % value.state.sizeK
         distance = abs(current_row - goal_row) + abs(current_col - goal_col)
         total_distance += distance
     return total_distance
 
 
-def h(state):
+def h(value):
     val = 0
     heuristic = sys.argv[2]
     if heuristic == "manh":
-        val = manhattan(state)
+        val = manhattan(value)
     elif heuristic == "hamm":
-        val = hamming(state)
+        val = hamming(value)
     return val
 
 

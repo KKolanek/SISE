@@ -14,7 +14,6 @@
 # for example:
 #  4x4_01_00001_bfs_rdul_sol.txt
 #
-# TODO: Change variable $Progcmd to match the command needed to invoke the
 # actual program, using the absolute (or relative) path, for example:
 #  $Progcmd = 'java -jar C:\Users\Krzys\PycharmProjects\SISE\puzzleval.jar'
 

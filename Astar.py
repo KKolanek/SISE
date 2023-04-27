@@ -13,10 +13,10 @@ def astr(root):
             maxDepth = max(value.depth, maxDepth)
             if value.isGoal():
                 path, lenPath = value.find_path()
-                return path, lenPath, len(closed)+len(closed), len(frontier), maxDepth
+                return path, lenPath, len(closed)+len(frontier), len(frontier), maxDepth
             closed.add(value)
             for neighborhood in root.state.getNeighborhood(value):
                 if neighborhood not in closed:
                     f = neighborhood.depth + h(neighborhood)
                     heapq.heappush(frontier, (f, neighborhood))
-    return -1, None, len(closed)+len(closed), len(frontier), maxDepth
+    return -1, None, len(closed)+len(frontier), len(frontier), maxDepth
