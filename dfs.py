@@ -10,14 +10,14 @@ def dfs(root):
     while len(frontier) != 0:
         value = frontier.pop()
         closed.add(value)
-        queue = value.state.getNeighborhood(value)
-        for neighborhood in reversed(queue):
-            if neighborhood.depth <= depth:
-                maxDepth = max(neighborhood.depth, maxDepth)
-                if neighborhood not in closed:
-                    if neighborhood.isGoal():
-                        path, lenPath = neighborhood.find_path()
+        queue = value.graf.getNeighborhood(value)
+        for neighbor in reversed(queue):
+            if neighbor.depth <= depth:
+                maxDepth = max(neighbor.depth, maxDepth)
+                if neighbor not in closed:
+                    if neighbor.isGoal():
+                        path, lenPath = neighbor.find_path()
                         return path, lenPath, len(closed) + len(frontier), len(frontier), maxDepth
-                    frontier.append(neighborhood)
-                    closed.add(neighborhood)
+                    frontier.append(neighbor)
+                    closed.add(neighbor)
     return -1, None, len(closed)+len(frontier), len(frontier), maxDepth

@@ -52,7 +52,7 @@ class Graf:
             actions = ['R', 'L', 'U', 'D']
         neighborhood = []
         for action in actions:
-            neighborhoodState = value.state.move(action)
+            neighborhoodState = value.graf.move(action)
             temp = value.depth
             neighborhoodNode = State(neighborhoodState, value, action, temp + 1)
             if neighborhoodState is not None:
@@ -61,8 +61,8 @@ class Graf:
 
 
 class State:
-    def __init__(self, state, parent, action, depth):
-        self.state = state
+    def __init__(self, graf, parent, action, depth):
+        self.graf = graf
         self.parent = parent
         self.action = action
         self.depth = depth
@@ -72,11 +72,11 @@ class State:
 
     def __eq__(self, other):
         if isinstance(other, State):
-            return tuple(self.state.puzzle) == tuple(other.state.puzzle)
+            return tuple(self.graf.puzzle) == tuple(other.graf.puzzle)
         return False
 
     def __hash__(self):
-        return hash(tuple(self.state.puzzle))
+        return hash(tuple(self.graf.puzzle))
 
     def find_path(self):
         path = []
@@ -91,31 +91,31 @@ class State:
         return path, lenPath
 
     def goal(self):
-        lists = self.state.puzzle[:]
+        lists = self.graf.puzzle[:]
         lists.sort()
         lists.remove(0)
         lists.append(0)
         return lists
 
     def isGoal(self):
-        return self.state.puzzle == self.goal()
+        return self.graf.puzzle == self.goal()
 
 
 def hamming(value):
     count = 0
-    for i in range(len(value.state.puzzle)):
-        if value.state.puzzle[i] != value.goal()[i]:
+    for i in range(len(value.graf.puzzle)):
+        if value.graf.puzzle[i] != value.goal()[i]:
             count += 1
     return count
 
 
 def manhattan(value):
     total_distance = 0
-    for i in range(len(value.state.puzzle)):
-        current_row = i // value.state.sizeW
-        current_col = i % value.state.sizeK
-        goal_row = (value.state.puzzle[i] - 1) // value.state.sizeW
-        goal_col = (value.state.puzzle[i] - 1) % value.state.sizeK
+    for i in range(len(value.graf.puzzle)):
+        current_row = i // value.graf.sizeW
+        current_col = i % value.graf.sizeK
+        goal_row = (value.graf.puzzle[i] - 1) // value.graf.sizeW
+        goal_col = (value.graf.puzzle[i] - 1) % value.graf.sizeK
         distance = abs(current_row - goal_row) + abs(current_col - goal_col)
         total_distance += distance
     return total_distance

@@ -10,12 +10,12 @@ def bfs(root):
     while len(frontier) != 0:
         value = frontier.popleft()
         closed.add(value)
-        for neighborhood in root.state.getNeighborhood(value):
-            maxDepth = max(neighborhood.depth, maxDepth)
-            if neighborhood.isGoal():
-                path, lenPath = neighborhood.find_path()
+        for neighbor in root.graf.getNeighborhood(value):
+            maxDepth = max(neighbor.depth, maxDepth)
+            if neighbor.isGoal():
+                path, lenPath = neighbor.find_path()
                 return path, lenPath, len(closed)+len(frontier), len(frontier), maxDepth
-            if neighborhood not in closed:
-                frontier.append(neighborhood)
-                closed.add(neighborhood)
+            if neighbor not in closed:
+                frontier.append(neighbor)
+                closed.add(neighbor)
     return -1, None, len(closed)+len(frontier), len(frontier), maxDepth
