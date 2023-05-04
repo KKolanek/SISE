@@ -1,2 +1,2 @@
-6
-LRRDDD
+4
+RDDD

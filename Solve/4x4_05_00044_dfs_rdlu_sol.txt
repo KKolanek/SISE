@@ -1,2 +1,2 @@
-7
-RLRULDR
+5
+RULDR

@@ -1,2 +1,2 @@
-7
-LRDDRRD
+5
+DDRRD

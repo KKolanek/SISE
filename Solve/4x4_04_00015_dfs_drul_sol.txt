@@ -1,2 +1,2 @@
-6
-DULDDR
+4
+LDDR

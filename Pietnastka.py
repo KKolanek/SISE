@@ -1,12 +1,16 @@
+import os
 import sys
 import Astar
 import bfs
 import dfs
 import time
 
-class Graf:
+class State:
 
-    def __init__(self, puzzle):
+    def __init__(self, puzzle, parent, action, depth):
+        self.parent = parent
+        self.action = action
+        self.depth = depth
         graf, w, k = load(sys.argv[3])
         self.sizeW = w
         self.sizeK = k
@@ -14,6 +18,39 @@ class Graf:
 
     def __iter__(self):
         return iter(self.puzzle)
+
+    def __lt__(self, other):
+        return self.depth < other.depth
+
+    def __eq__(self, other):
+        if isinstance(other, State):
+            return tuple(self.puzzle) == tuple(other.puzzle)
+        return False
+
+    def __hash__(self):
+        return hash(tuple(self.puzzle))
+
+    def find_path(self):
+        path = []
+        node = self
+        while node is not None and node.action is not None:
+            path.append(node.action)
+            node = node.parent
+        path.reverse()
+        lenPath = len(path)
+        path = "".join(path)
+        path = path[0:lenPath]
+        return path, lenPath
+
+    def goal(self):
+        lists = self.puzzle[:]
+        lists.sort()
+        lists.remove(0)
+        lists.append(0)
+        return lists
+
+    def isGoal(self):
+        return self.puzzle == self.goal()
 
     def move(self, course):
         newPuzzle = self.puzzle[:]
@@ -42,82 +79,39 @@ class Graf:
                 newPuzzle[index0 - self.sizeW], newPuzzle[index0] = newPuzzle[index0], newPuzzle[index0 - self.sizeW]
             else:
                 return None
-        return Graf(newPuzzle)
+        return newPuzzle
 
-
-    @staticmethod
-    def getNeighborhood(value):
+    def getNeighborhood(self):
         actions = [*sys.argv[2]]
         if actions == ['m', 'a', 'n', 'h'] or actions == ['h', 'a', 'm', 'm']:
             actions = ['R', 'L', 'U', 'D']
         neighborhood = []
         for action in actions:
-            neighborhoodState = value.graf.move(action)
-            temp = value.depth
-            neighborhoodNode = State(neighborhoodState, value, action, temp + 1)
-            if neighborhoodState is not None:
+            puzzle = self.move(action)
+            temp = self.depth
+            neighborhoodNode = State(puzzle, self, action, temp + 1)
+            if puzzle is not None:
                 neighborhood.append(neighborhoodNode)
         return neighborhood
 
 
-class State:
-    def __init__(self, graf, parent, action, depth):
-        self.graf = graf
-        self.parent = parent
-        self.action = action
-        self.depth = depth
-
-    def __lt__(self, other):
-        return self.depth < other.depth
-
-    def __eq__(self, other):
-        if isinstance(other, State):
-            return tuple(self.graf.puzzle) == tuple(other.graf.puzzle)
-        return False
-
-    def __hash__(self):
-        return hash(tuple(self.graf.puzzle))
-
-    def find_path(self):
-        path = []
-        node = self
-        while node is not None and node.action is not None:
-            path.append(node.action)
-            node = node.parent
-        path.reverse()
-        lenPath = len(path)
-        path = "".join(path)
-        path = path[0:lenPath]
-        return path, lenPath
-
-    def goal(self):
-        lists = self.graf.puzzle[:]
-        lists.sort()
-        lists.remove(0)
-        lists.append(0)
-        return lists
-
-    def isGoal(self):
-        return self.graf.puzzle == self.goal()
-
-
 def hamming(value):
     count = 0
-    for i in range(len(value.graf.puzzle)):
-        if value.graf.puzzle[i] != value.goal()[i]:
+    for i in range(len(value.puzzle)):
+        if value.puzzle[i] != value.goal()[i]:
             count += 1
     return count
 
 
 def manhattan(value):
     total_distance = 0
-    for i in range(len(value.graf.puzzle)):
-        current_row = i // value.graf.sizeW
-        current_col = i % value.graf.sizeK
-        goal_row = (value.graf.puzzle[i] - 1) // value.graf.sizeW
-        goal_col = (value.graf.puzzle[i] - 1) % value.graf.sizeK
-        distance = abs(current_row - goal_row) + abs(current_col - goal_col)
-        total_distance += distance
+    for i in range(value.sizeW):
+        for j in range(value.sizeK):
+            tile = value.puzzle[i * value.sizeW + j]
+            if tile != 0:
+                goal_i = (tile - 1) // value.sizeW
+                goal_j = (tile - 1) % value.sizeK
+                total_distance += abs(i - goal_i) + abs(j - goal_j)
     return total_distance
 
 
@@ -132,36 +126,28 @@ def h(value):
 
 
 def load(name):
-    with open("4x4/" + name, "r") as f:
-        lines = f.read().splitlines()
-    size = lines[0]
-    graf = []
-    for i in lines[1:len(lines)]:
-        graf += i.split(" ")
-    graf = [int(i) for i in graf]
-    return graf, int(size[0]), int(size[2])
+    with open(os.path.join("4x4", name), "r") as f:
+        size = next(f).strip().split()
+        rows, cols = map(int, size)
+        graf = [int(x) for line in f for x in line.split()]
+    return graf, rows, cols
 
 
 def save(dane, lenP, name, *solve):
-    f = open(name, mode='w')
-    if dane != -1:
-        f.write(str(lenP) + "\n")
-    elif dane == -1 and solve:
-        f.write("-1\n")
-    if solve:
-        f.write(str(solve[0]))
-        f.write("\n" + str(solve[1]))
-        f.write("\n" + str(solve[2]))
-        f.write("\n" + str(solve[3]))
-    else:
-        f.write(str(dane))
-    f.close()
-
+    with open(name, mode='w') as f:
+        if dane != -1:
+            f.write(f"{lenP}\n")
+        elif dane == -1 and solve:
+            f.write("-1\n")
+        if solve:
+            f.write(f"{solve[0]}\n{solve[1]}\n{solve[2]}\n{solve[3]}")
+        else:
+            f.write(f"{dane}")
 
 def main():
-    graf, w, k = load(sys.argv[3])
+    graf, rows, columns = load(sys.argv[3])
     path, lenPath, visited, closed, depth = 0, 0, 0, 0, 0
-    root = State(Graf(graf), None, None, 0)
+    root = State(graf, None, None, 0)
     if sys.argv[1] == "bfs":
         path, lenPath, visited, closed, depth = bfs.bfs(root)
     elif sys.argv[1] == "dfs":
@@ -170,7 +156,7 @@ def main():
         path, lenPath, visited, closed, depth = Astar.astr(root)
     save(path, lenPath, "Solve/" + sys.argv[4])
     save(path, lenPath, "Stats/" + sys.argv[5], visited, closed, depth, round(time.process_time(), 3))
-    print(str(path), visited, closed, depth, round(time.process_time(), 3))
+    print(str(path), lenPath, visited, closed, depth, round(time.process_time(), 3))
 
 
 if __name__ == "__main__": main()

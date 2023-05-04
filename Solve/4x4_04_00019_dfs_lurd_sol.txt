@@ -1,2 +1,2 @@
-6
-LRDLDR
+4
+DLDR
