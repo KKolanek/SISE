@@ -98,7 +98,7 @@ class State:
 def hamming(value):
     count = 0
     for i in range(len(value.puzzle)):
-        if value.puzzle[i] != value.goal()[i]:
+        if value.puzzle[i] != 0 and value.puzzle[i] != value.goal()[i]:
             count += 1
     return count
 
