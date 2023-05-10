@@ -23,10 +23,10 @@ def stats(name, *strategy):
                     x, y, z, k, m = f.readlines()
                     if x != -1:
                         stats_dict[size]['L'].append(int(x))
-                        stats_dict[size]['C'].append(int(y))
-                        stats_dict[size]['F'].append(int(z))
-                        stats_dict[size]['D'].append(int(k))
-                        stats_dict[size]['T'].append(float(m))
+                    stats_dict[size]['C'].append(int(y))
+                    stats_dict[size]['F'].append(int(z))
+                    stats_dict[size]['D'].append(int(k))
+                    stats_dict[size]['T'].append(float(m))
 
     avgL = [sum(stats_dict[size]['L']) / len(stats_dict[size]['L']) for size in stats_dict]
     avgClosed = [sum(stats_dict[size]['C']) / len(stats_dict[size]['C']) for size in stats_dict]
